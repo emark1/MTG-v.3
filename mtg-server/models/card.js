@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     power: DataTypes.STRING,
     colorindicator: DataTypes.STRING,
     coloridentity: DataTypes.STRING,
-    multiverseid: DataTypes.INTEGER
+    multiverseid: DataTypes.INTEGER,
+    userId: DataTypes.INTEGER
   }, {});
   Card.associate = function(models) {
     // associations can be defined here

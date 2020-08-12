@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
-import './CardSearch.css';
+import './CSS/CardSearch.css';
+import { connect } from 'react-redux'
 
 
 export class CardSearch extends Component {
@@ -35,12 +36,14 @@ export class CardSearch extends Component {
   }
 
   addClick(card) {
+    let token = localStorage.getItem('jsonwebtoken') 
     fetch('http://localhost:8080/add-card/', {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'
         },
-        body: JSON.stringify(card)
+        body: JSON.stringify({card: card, token: token})
+        //body: JSON.stringify(card)
       })
     }
 

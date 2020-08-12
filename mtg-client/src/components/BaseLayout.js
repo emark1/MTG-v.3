@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Link, NavLink} from 'react-router-dom'
-import './BaseLayout.css';
+import './CSS/BaseLayout.css';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
@@ -18,7 +18,7 @@ class Menu extends Component {
             <li className="Text"><NavLink to="/">Home</NavLink></li>
             <li className="Text"><Link to="/view-all-cards">View Your Collection</Link></li>
             <li className="Text"><Link to="/card-search">Search For Cards</Link></li>
-            {this.props.isAuthenticated ?<li><button onClick={this.handleLogoutClick}>Logout</button></li>: null }
+            {this.props.isAuthenticated ? <li><button onClick={this.handleLogoutClick}>Logout</button></li>: null }
             </ul>
         )
     }

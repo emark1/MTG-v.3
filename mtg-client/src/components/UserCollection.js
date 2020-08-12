@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import './UserCollection.css';
-import Mana_B from './Mana_B.png'
-import Mana_G from './Mana_G.png'
-import Mana_W from './Mana_W.png'
-import Mana_R from './Mana_R.png'
-import Mana_U from './Mana_U.png'
+import './CSS/UserCollection.css';
+import Mana_B from './Mana Icons/Mana_B.png'
+import Mana_G from './Mana Icons/Mana_G.png'
+import Mana_W from './Mana Icons/Mana_W.png'
+import Mana_R from './Mana Icons/Mana_R.png'
+import Mana_U from './Mana Icons/Mana_U.png'
+import axios from 'axios'
 
 export class CardList extends Component {
     constructor() {
@@ -25,7 +26,7 @@ export class CardList extends Component {
           rarity: '',
           power: '',
           price: 0,
-          value: 0,
+          value: null,
           color: '',
           coloridentity: '',
 
@@ -38,16 +39,34 @@ export class CardList extends Component {
     populateCards() {
     console.log("Generating card collection!")
     let url = 'http://localhost:8080/api/cards'
-    fetch(url)
-    .then(response => response.json())
-    .then(json => {
-        console.log("setting the state.")
-        this.setState({
-        //Sets value of the cards array in the state to the json
-        cards: json,
-        originalCards: json
+    let token = localStorage.getItem('jsonwebtoken')
+    // fetch(url)
+    // .then(response => response.json())
+    // .then(json => {
+    //     console.log("setting the state.")
+    //     this.setState({
+    //     //Sets value of the cards array in the state to the json
+    //     cards: json,
+    //     originalCards: json
+    //         })
+    //     })
+        axios.post(url, {
+            token: token
+        })
+        .then(response => {
+            console.log(response)
+            this.setState({
+                cards: response.data,
+                originalCards: response.data
             })
         })
+        // .then(response => response.json())
+        // .then(json => {
+        //     this.setState({
+        //         cards: json,
+        //         originalCards: json
+        //     })
+        // })
     }
 
     generatePrice() {
@@ -63,10 +82,36 @@ export class CardList extends Component {
                 })
             })
         }
+    
+    getTotalValue() {
+        console.log("Updating value")
+        let newValue = 0;
+        this.state.cards.forEach(card => {
+            //newValue += card.price
+            console.log("Name: " + card.name)
+            console.log(Number.parseFloat(card.price))
+            newValue += Number.parseFloat(card.price);
+        })
+        console.log("New value: " + newValue)
+        // if(newValue != this.state.value) {
+        this.setState({value: newValue})
+        //}
+    }
+
+    setInitialValue() {
+        this.setState({value: 0})
+    }
 
     componentDidMount() {
         this.populateCards()
-        this.generatePrice()
+        this.setInitialValue()
+        //this.updateValue()
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.cards !== this.state.cards) {
+            this.getTotalValue()
+        }
     }
 
 
@@ -121,16 +166,7 @@ export class CardList extends Component {
                 <img onClick={() => this.filterCards("R")} className="ColorImages" src={Mana_R}/>
                 <img onClick={() => this.filterCards("U")} className="ColorImages" src={Mana_U}/>
                 <img onClick={() => this.filterCards("G")} className="ColorImages" src={Mana_G}/>
-                {/* <img className={this.state.active && 'active'} onClick={() => { this.filterCards("B"); this.setState({active: !this.state.active});}} className="ColorImages" src={Mana_B}/>
-                <img onClick={() => this.filterCards("W")} className="ColorImages" src={Mana_W}/>
-                <img onClick={() => this.filterCards("R")} className="ColorImages" src={Mana_R}/>
-                <img onClick={() => this.filterCards("U")} className="ColorImages" src={Mana_U}/>
-                <img onClick={() => this.filterCards("G")} className="ColorImages" src={Mana_G}/> */}
                 <button onClick={() => this.resetCards()}>Reset Colors</button>
-
-                {/* onClick={() => { this.filterCards("B"); this.setState({active: !this.state.active});}} */}
-
-                {/* <button className={this.state.active && 'active'} onClick={() => { this.filterCards("B"); this.setState({active: !this.state.active});}}>Click me</button> */}
             </li>
             <ul className="UList">{cardItems}</ul>
             </div>

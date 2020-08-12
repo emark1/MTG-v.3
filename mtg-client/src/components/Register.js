@@ -3,7 +3,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { setAuthenticationHeader } from '../utils/authenticate'
 import { withRouter } from 'react-router'
-import './Register.css';
+import './CSS/Register.css';
 
 class Register extends Component {
     constructor () {

@@ -15,22 +15,78 @@ const bcrypt = require('bcrypt');
 
 //****************ADD CARD TO COLLECTION****************
 
+// app.post('/add-card',(req,res) => {
+//   // Get the input variables from the results page
+//   let name = req.body.name
+//   let cmc = req.body.cmc
+//   let rarity = req.body.rarity
+//   let artist = req.body.artist
+//   let cardid = req.body.id
+//   let power = req.body.power
+//   let imageuripng = req.body.image_uris.png
+//   let price = req.body.prices.usd
+//   let colors = req.body.colors.toString()
+//   // let colorindicator = req.body.
+//   let coloridentity = req.body.color_identity.toString()
+
+//   //create variable that holds an object, in format of Card class
+//   let card = models.Card.build({
+//       name: name,
+//       cmc: cmc,
+//       rarity: rarity,
+//       artist: artist,
+//       cardid: cardid,
+//       power: power,
+//       imageuripng: imageuripng,
+//       price: price,
+//       color: colors,
+//       coloridentity: coloridentity
+//     })
+//   //save the new variable to the Cards table
+//   card.save().then((savedCard) => {
+//     console.log(savedCard)
+//   })
+//   .then(() => {
+//     //success message
+//     console.log("Card saved!")
+//   }).catch(error => console.log(error))
+// })
+
 app.post('/add-card',(req,res) => {
+  console.log(req.body.card)
+  //console.log("TOKEN: " + req.token)
   // Get the input variables from the results page
-  let name = req.body.name
-  let cmc = req.body.cmc
-  let rarity = req.body.rarity
-  let artist = req.body.artist
-  let cardid = req.body.id
-  let power = req.body.power
-  let imageuripng = req.body.image_uris.png
-  let price = req.body.prices.usd
-  let colors = req.body.colors.toString()
-  // let colorindicator = req.body.
-  let coloridentity = req.body.color_identity.toString()
+  //console.log("COLORS: " + req.body.card.colors)
+  //console.log("COLOR IDENTITY: " + req.body.card.color_identity)
+
+  let name = req.body.card.name
+  let cmc = req.body.card.cmc
+  let rarity = req.body.card.rarity
+  let artist = req.body.card.artist
+  let cardid = req.body.card.id
+  let power = req.body.card.power
+  let imageuripng = req.body.card.image_uris.png
+  let price = req.body.card.prices.usd
+  let colors = req.body.card.colors.toString()
+  let userId; 
+  let coloridentity = req.body.card.color_identity.toString()
+
+  jwt.verify(req.body.token, 'pinkflamingo', function(err, decodedToken) {
+    if(err) { 
+      console.log("Error verifying token")
+      res.json({success: false, message: "Error verifying token"}) 
+    }
+    else {
+     console.log("Setting userID!") 
+     userId = decodedToken.userID;   // Add to req object
+    }
+  });
+
+  console.log("USERID?: " + userId)
 
   //create variable that holds an object, in format of Card class
   let card = models.Card.build({
+      userId: userId,
       name: name,
       cmc: cmc,
       rarity: rarity,
@@ -54,8 +110,32 @@ app.post('/add-card',(req,res) => {
 
 //****************RETRIEVE CARDS FROM DATABASE****************
 
-app.get('/api/cards',(req,res) => {
-    models.Card.findAll().then((cards) => res.json(cards))
+// app.get('/api/cards',(req,res) => {
+//     models.Card.findAll().then((cards) => res.json(cards))
+// })
+
+app.post('/api/cards', (req,res) => {
+  let userId;
+
+  jwt.verify(req.body.token, 'pinkflamingo', function(err, decodedToken) {
+    if(err) { 
+      console.log("Error verifying token")
+      res.json({success: false, message: "Error verifying token"}) 
+    }
+    else {
+     console.log("Setting userID!") 
+     userId = decodedToken.userID;   // Add to req object
+    }
+  });
+
+  console.log("Retrive Cards: USERID IS: " + userId)
+
+  models.Card.findAll({
+  where: {
+    userId: userId,
+  }
+  }).then((cards) => res.json(cards))
+
 })
 
 //****************DELETE A CARD FROM DATABASE****************
@@ -154,7 +234,7 @@ app.post('/login',(req, res) => {
     else {
       bcrypt.compare(password, user.password, function(err, result) {
         if(result) {
-              jwt.sign({ username: username }, 'pinkflamingo', function(err, token) {
+              jwt.sign({ username: username, userID: user.id }, 'pinkflamingo', function(err, token) {
                 if(token) {
                 res.json({token: token})
                 } else {
@@ -170,21 +250,21 @@ app.post('/login',(req, res) => {
 })
 
 function authentication(req,res,next) {
-    let headers = req.headers["authorization"]
-    let token = headers.split(' ')[1]
-  
-    jwt.verify(token,'pinkflamingo',(err,decoded) => {
+  let headers = req.headers["authorization"]
+  let token = headers.split(' ')[1]
+
+  jwt.verify(token,'pinkflamingo',(err,decoded) => {
+    if(decoded) {
       if(decoded) {
-        if(decoded) {
-        next()
-      } else {
-        res.status(401).json({messages: 'Bad token bud'})
-      }
+      next()
     } else {
       res.status(401).json({messages: 'Bad token bud'})
     }
-    })
+  } else {
+    res.status(401).json({messages: 'Bad token bud'})
   }
+  })
+}
 
 app.listen(8080,() => {
   console.log('Server sure is humming!')
