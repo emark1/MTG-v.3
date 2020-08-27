@@ -41,14 +41,15 @@ class App extends Component {
     }
 
   return (
-      <div className="App" >
-        <h1 className="Text">LOGIN</h1>
-      
-        <Login />
+      <div>
+        <h1 className="Text Header_Text">LOGIN</h1>
+        <div className="Center_Content">
+          <Login />
+        </div>
         <p></p>
-        <div>
 
-        <img className="frontImage" src={this.state.randomCard.image_uris.png}/>
+        <div className = "Center_Content">
+          <img className="Front_Image" src={this.state.randomCard.image_uris.png}/>
         </div>
 
       </div>

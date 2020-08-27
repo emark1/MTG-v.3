@@ -5,10 +5,9 @@
   
   .UList { 
     columns: 3;
-
-    text-align: center;
     list-style: none;
   }
+
   .List {
    margin-bottom: 40px;
   }

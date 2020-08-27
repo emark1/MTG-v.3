@@ -39,17 +39,17 @@ ReactDOM.render(
           width: "100%",
           height: "100%"
         }}
-      >
-        <Background />
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%"
-          }}
-        >
+    ></div>
+      <Background />
+    <div
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%"
+      }}
+    >
     
     <BaseLayout>
         <Switch>
@@ -60,7 +60,7 @@ ReactDOM.render(
         </Switch>
     </BaseLayout>
     </div>
-    </div>
+
     </BrowserRouter>
     </Provider>
     , document.getElementById('root'));

@@ -1,24 +1,50 @@
 
+// const initialState = {
+//     isAuthenticated: false
+//   }
+  
+//   const reducer = (state = initialState, action) => {
+  
+//     switch(action.type) {
+//       case 'ON_AUTHENTICATED':
+//         return {
+//           ...state,
+//           isAuthenticated: action.token != null ? true : false
+//         }
+//         case 'LOGOUT':
+//         return {
+//           ...state,
+//           isAuthenticated: false 
+//         }
+//     }
+  
+//     return state
+//   }
+  
+//   export default reducer
+
+
 const initialState = {
-    isAuthenticated: false
+  isAuthenticated: false
+}
+
+const reducer = (state = initialState, action) => {
+
+  //let token = localStorage.getItem('jsonwebtoken')
+  switch(action.type) {
+    case 'ON_AUTHENTICATED':
+      return {
+        ...state,
+        isAuthenticated: action.token != null ? true : false
+      }
+      case 'LOGOUT':
+      return {
+        ...state,
+        isAuthenticated: false 
+      }
   }
-  
-  const reducer = (state = initialState, action) => {
-  
-    switch(action.type) {
-      case 'ON_AUTHENTICATED':
-        return {
-          ...state,
-          isAuthenticated: action.token != null ? true : false
-        }
-        case 'LOGOUT':
-        return {
-          ...state,
-          isAuthenticated: false 
-        }
-    }
-  
-    return state
-  }
-  
-  export default reducer
+
+  return state
+}
+
+export default reducer
